@@ -20,7 +20,23 @@ func NewAuthController(client pb.AuthServiceClient) controller {
 }
 
 func (c controller) Register(gc *gin.Context) {
-
+	rR := RegisterRequest{}
+	if err := gc.Bind(&rR); err != nil {
+		log.Println(err)
+		gc.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+	res, err := c.Client.Register(context.Background(), &pb.RegisterRequest{
+		Phone:    rR.Phone,
+		Password: rR.Password,
+		Company:  rR.Company,
+	})
+	if err != nil {
+		log.Println(err)
+		gc.AbortWithStatus(http.StatusBadGateway)
+		return
+	}
+	gc.JSON(http.StatusOK, &res)
 }
 
 func (c controller) Validate(gc *gin.Context) {
