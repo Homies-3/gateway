@@ -2,6 +2,7 @@ package main
 
 import (
 	"gateway/auth"
+	"gateway/post"
 	"gateway/util"
 	"log"
 
@@ -17,7 +18,8 @@ func main() {
 
 	r := gin.Default()
 
-	auth.RegisterRoutes(r, &config)
+	authSVC := auth.RegisterRoutes(r, &config)
+	post.RegisterRoutes(r, &config, authSVC)
 
 	r.Run(config.Port)
 

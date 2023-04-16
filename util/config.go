@@ -7,6 +7,7 @@ import (
 type Config struct {
 	Port       string `mapstructure:"GATEWAY_PORT"`
 	AuthSVCUrl string `mapstructure:"AUTH_SVC_URL"`
+	PostSVCUrl string `mapstructure:"POST_SVC_URL"`
 }
 
 func LoadConfig(path string) (config Config, err error) {
