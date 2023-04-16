@@ -11,9 +11,11 @@ func RegisterRoutes(r *gin.Engine, c *util.Config) *AuthService {
 		SVC: NewAuthServiceClient(c),
 	}
 
+	authC := NewAuthController(svc.SVC)
+
 	routes := r.Group("/auth")
-	routes.POST("/register", nil)
-	routes.POST("/login", nil)
+	routes.POST("/register", authC.Register)
+	routes.POST("/login", authC.Login)
 
 	return svc
 }

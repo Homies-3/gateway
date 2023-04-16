@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"gateway/auth/pb"
+	pb "gateway/auth/pb"
 	"gateway/util"
 	"log"
 
@@ -17,5 +17,6 @@ func NewAuthServiceClient(c *util.Config) pb.AuthServiceClient {
 	if err != nil {
 		log.Fatalln("Cannot connect to auth service")
 	}
+	log.Println("Connect to AUTHSERVICE")
 	return pb.NewAuthServiceClient(cc)
 }

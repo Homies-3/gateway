@@ -1,6 +1,7 @@
 package main
 
 import (
+	"gateway/auth"
 	"gateway/util"
 	"log"
 
@@ -15,7 +16,8 @@ func main() {
 	log.Println("Loaded config")
 
 	r := gin.Default()
-	
+
+	auth.RegisterRoutes(r, &config)
 
 	r.Run(config.Port)
 
