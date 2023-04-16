@@ -26,11 +26,18 @@ func (c controller) CreatePost(gc *gin.Context) {
 		gc.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
-	res, err := c.Client.CreatePost(context.Background(), &pb.PostRequest{})
+	res, err := c.Client.CreatePost(context.Background(), &pb.PostRequest{
+		Title:   rR.Title,
+		Content: rR.Content,
+		User: &pb.User{
+			Username: gc.GetString("userId"),
+			Company:  "test",
+		},
+	})
 	if err != nil {
 		log.Println(err)
 		gc.AbortWithStatus(http.StatusBadGateway)
 		return
 	}
-	gc.JSON(http.StatusOK, &res)
+	gc.JSON(http.StatusCreated, &res)
 }
