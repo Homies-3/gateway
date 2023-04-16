@@ -18,15 +18,24 @@ func InitAuthMiddleware(svc *AuthService) AuthMiddlewareConfig {
 	return AuthMiddlewareConfig{svc}
 }
 
-func (c *AuthMiddlewareConfig) AuthRequired(ctx *gin.Context) {
+func ExtractJWTFromRequest(ctx *gin.Context) (token []string, status int) {
 	authorization := ctx.Request.Header.Get("authorization")
-
 	if authorization == "" {
+		status = http.StatusUnauthorized
+		return
+	}
+	token = strings.Split(authorization, "Bearer ")
+	status = http.StatusOK
+	return
+}
+
+func (c *AuthMiddlewareConfig) AuthRequired(ctx *gin.Context) {
+	token, statusCode := ExtractJWTFromRequest(ctx)
+
+	if statusCode == http.StatusUnauthorized {
 		ctx.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}
-
-	token := strings.Split(authorization, "Bearer ")
 
 	if len(token) < 2 {
 		ctx.AbortWithStatus(http.StatusUnauthorized)

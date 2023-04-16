@@ -40,7 +40,27 @@ func (c controller) Register(gc *gin.Context) {
 }
 
 func (c controller) Validate(gc *gin.Context) {
+	token, statusCode := ExtractJWTFromRequest(gc)
+	if statusCode == http.StatusUnauthorized {
+		gc.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
 
+	if len(token) < 2 {
+		gc.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	res, err := c.Client.Validate(context.Background(), &pb.ValidateRequest{
+		Token: token[1],
+	})
+
+	if err != nil {
+		log.Println(err)
+		gc.AbortWithStatus(http.StatusBadGateway)
+		return
+	}
+	gc.JSON(int(res.GetStatus()), &res)
 }
 
 func (c controller) Login(gc *gin.Context) {
